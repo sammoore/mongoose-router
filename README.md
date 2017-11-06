@@ -41,42 +41,9 @@ The following query parameters are recognized:
 - `sort`
 - `select`
 - `populate`
-- `match`
+- `where` \*
 
-### Session handling
-
-It's often useful to have the session available in mongoose middleware to do
-things like validation and authorization.
-
-#### Accessing the session from query or model middleware
-
-```javascript
-User.pre('find', function (next) {
-  console.log(this.session);
-  next();
-});
-```
-
-```javascript
-User.pre('save', function (next) {
-  console.log(this.session);
-  next();
-});
-```
-
-#### Setting the session
-
-The session is set whenever the router middleware is used, otherwise set the
-`session` query option.
-
-```javascript
-User.findOne()
-  .setOptions({ session: req.session })
-  .exec(function (err, user) {
-    console.log(user.session === req.session);
-    // => true
-  });
-```
+> \*: where depends on the availability of nested query string parameters. In addition, any `req.params` will be assigned as where parameters.
 
 ### Body parsing
 
