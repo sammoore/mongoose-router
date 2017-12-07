@@ -1,7 +1,5 @@
 # mongoose-express-router
 
-[![Build Status](https://img.shields.io/travis/alexmingoia/mongoose-express-router.svg?style=flat)](http://travis-ci.org/alexmingoia/mongoose-express-router) [![Code Coverage](https://img.shields.io/coveralls/alexmingoia/mongoose-express-router.svg?style=flat)](https://coveralls.io/alexmingoia/mongoose-express-router) [![NPM version](https://img.shields.io/npm/v/mongoose-express-router.svg?style=flat)](http://badge.fury.io/js/mongoose-express-router)
-
 > Create Express 4 router and middleware from Mongoose 4 model.
 
 ## Usage
@@ -12,24 +10,21 @@ var mongoose = require('mongoose');
 var router = require('mongoose-express-router');
 
 var db = mongoose.createConnection('mongodb://localhost/test');
-var schema = mongoose.Schema({ name: 'string' }).plugin(router);
+var schema = mongoose.Schema({ name: 'string' });
 var User = mongoose.model('User', schema);
 
 var app = express();
-app.use('/users', User.router());
+app.use('/users', router(User));
 
 app.listen(3000);
 ```
 
-You can also use router middleware individually:
+The underlying [mongoose-controller][mongoose-controller] used by each middleware
+is available, as well as the middleware functions themselves:
 
 ```javascript
-app
-  .get('/users', User.router('find'))
-  .post('/users', User.router('create'))
-  .get('/users/:id', User.router('findOne'))
-  .patch('/users/:id', User.router('update'))
-  .delete('/users/:id', User.router('delete'));
+router(User).middleware
+router(User).controller
 ```
 
 ### Queries
@@ -43,28 +38,27 @@ The following query parameters are recognized:
 - `populate`
 - `where` \*
 
-> \*: where depends on the availability of nested query string parameters. In addition, any `req.params` will be assigned as where parameters.
+> \*: where depends on the availability of nested query string parameters.
+
+In addition, any `req.params` will be assigned as where parameters. This is useful
+if nested query parameters are not available, as multiple routes can point to one
+instance of a router. For example:
+
+```javascript
+var app = express();
+var r = router(Model);
+
+app.use('/model/skip/:skip', r);
+app.use('/model', r);
+```
 
 ### Body parsing
 
 You must provide your own body parsing middleware. A `req.body` object must be
 available for the post/create middleware to work.
 
-### Custom middleware
+### Builtin middleware
 
-Custom middleware can be accessed using `Model.router()` and has the model
-exposed via `req.Model`:
+_Incomplete_
 
-```javascript
-schema.plugin(router, {
-  middleware: {
-    myMiddleware: function (req, res, next) {
-      console.log(req.Model);
-      next();
-    }
-  }
-});
-
-// Returns middleware
-User.router('myMiddleware');
-```
+[mongoose-controller]: https://github.com/samtheprogram/mongoose-controller
