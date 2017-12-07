@@ -1,6 +1,6 @@
 'use strict';
 
-const { defineProperty, keys } = Object;
+const { create, defineProperty, keys } = Object;
 
 const Controller = require('mongoose-controller');
 const express = require('express');
@@ -10,9 +10,8 @@ module.exports = function createRouter(Model) {
   const controller = new Controller(Model);
   const router = express.Router();
 
-  defineProperty(router, 'controller', {
-    get: () => controller
-  });
+  getter(router, 'controller', create(controller));
+  getter(router, 'middleware', create(middleware));
   
   router.use((req, res, next) => {
     req.controller = router.controller;
@@ -34,6 +33,12 @@ module.exports = function createRouter(Model) {
 
   return router;
 };
+
+function getter(obj, name, it) {
+  defineProperty(obj, name, {
+    get: () => it
+  });
+}
 
 function query(qsObject, params) {
   if (keys(params).length < 1) {
