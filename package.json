@@ -1,6 +1,6 @@
 {
   "name": "mongoose-express-router",
-  "version": "2.2.1",
+  "version": "3.0.0-pre",
   "description": "Create Express 4 router and middleware from Mongoose 4 model.",
   "main": "index.js",
   "scripts": {
