@@ -6,8 +6,8 @@ const Controller = require('mongoose-controller');
 const express = require('express');
 const middleware = require('./lib/middleware');
 
-module.exports = function createRouter(Model) {
-  const controller = new Controller(Model);
+module.exports = function createRouter(Model, options) {
+  const controller = new Controller(Model, options);
   const router = express.Router();
 
   getter(router, 'controller', create(controller));
