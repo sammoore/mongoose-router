@@ -34,8 +34,6 @@
     "eslint": "^7.1.0",
     "eslint-plugin-editorconfig": "^2.1.2",
     "eslint-plugin-mocha": "^7.0.0",
-    "istanbul": "^0.3.21",
-    "istanbul-coveralls": "^1.0.3",
     "mocha": "^2.3.2",
     "mongoose": "~4.7",
     "supertest": "^1.1.0"
