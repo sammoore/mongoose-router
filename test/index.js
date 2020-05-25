@@ -19,10 +19,16 @@ function App() {
   return app;
 }
 
-mongoose.connect('mongodb://localhost:27017/mongoose-router-test', { useMongoClient: true });
+const conn = mongoose.connect('mongodb://localhost:27017/mongoose-router-test', {
+  useMongoClient: true
+});
 
 before(function (done) {
   model('__db').db.dropDatabase(done);
+});
+
+after(function (done) {
+  conn.close(done);
 });
 
 describe('module', function () {
