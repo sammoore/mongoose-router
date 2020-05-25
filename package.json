@@ -25,7 +25,7 @@
   "homepage": "https://github.com/alexmingoia/mongoose-express-router#readme",
   "dependencies": {
     "express": "~4.17",
-    "mongoose-controller": "./vendor/mongoose-controller"
+    "mongoose-controller": "git+https://github.com/samtheprogram/mongoose-controller.git#0.3.0-1"
   },
   "peerDependencies": {
     "mongoose": "4.13.20"

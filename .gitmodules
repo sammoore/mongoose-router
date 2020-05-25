@@ -1,3 +1,0 @@
-[submodule "vendor/mongoose-controller"]
-	path = vendor/mongoose-controller
-	url = https://github.com/samtheprogram/mongoose-controller
