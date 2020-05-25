@@ -32,15 +32,15 @@ describe('module', function () {
 
   it('creates a descendent of express.Router', function () {
     const router = createRouter(model('Module'));
-    assert.ok(express.Router.isPrototypeOf(router));
+    assert.ok(Object.prototype.isPrototypeOf.call(express.Router, router));
   });
 });
 
 describe('Router', function () {
-  var Wrapped, Model, router, app;
+  var Model, router;
 
   before(function () {
-    Wrapped = model('Wrapped');
+    model('Wrapped');
     Model = model('Router', new mongoose.Schema({
       list: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Wrapped' }],
       foo: String
@@ -52,49 +52,49 @@ describe('Router', function () {
     it('inserts and returns a document', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
       request(app)
-      .post('/')
-      .send({})
-      .expect(201)
-      .end((err, res) => {
-        if (err) return done(err);
+        .post('/')
+        .send({})
+        .expect(201)
+        .end((err, res) => {
+          if (err) return done(err);
 
-        Model.findById(res.body._id).exec()
-        .then(doc => doc._id.toString())
-        .then(id => assert.equal(id, res.body._id))
-        .then(() => done())
-        .catch(err => done(err));
-      });
-    }); 
+          Model.findById(res.body._id).exec()
+            .then((doc) => doc._id.toString())
+            .then((id) => assert.equal(id, res.body._id))
+            .then(() => done())
+            .catch((err) => done(err));
+        });
+    });
 
     it('inserts and returns the specified document', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
       request(app)
-      .post('/')
-      .send({ foo: 'bar' })
-      .expect(201)
-      .end((err, res) => {
-        if (err) return done(err);
+        .post('/')
+        .send({ foo: 'bar' })
+        .expect(201)
+        .end((err, res) => {
+          if (err) return done(err);
 
-        Promise.resolve().then(() => {
-          const { _id } = res.body;
-          return Model.findOne({ _id }).exec();
-        })
-        .then((doc) => {
-          assert.equal(doc.foo, res.body.foo);
-          done();
-        })
-        .catch(err => done(err));
-      });
+          Promise.resolve().then(() => {
+            const { _id } = res.body;
+            return Model.findOne({ _id }).exec();
+          })
+            .then((doc) => {
+              assert.equal(doc.foo, res.body.foo);
+              done();
+            })
+            .catch((err) => done(err));
+        });
     });
 
     it('passes errors to next middleware', function (done) {
@@ -104,39 +104,39 @@ describe('Router', function () {
       });
       const router = createRouter(model('PostError', schema));
 
-      const app = App(); 
+      const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(418).end();
       });
 
       request(app)
-      .post('/')
-      .send({})
-      .expect(418, done);
+        .post('/')
+        .send({})
+        .expect(418, done);
     });
   });
 
-  describe('GET /', function (done) {
+  describe('GET /', function (_) {
     it('responds with an array of documents', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
       request(app)
-      .get('/')
-      .send({})
-      .expect(200)
-      .end((err, res) => {
-        if (err) return done(err);
-        try {
-          assert.ok(Array.isArray(res.body));
-          assert.ok(res.body.every(doc => '_id' in doc));
-          done();
-        } catch (err) { done(err) }
-      });
+        .get('/')
+        .send({})
+        .expect(200)
+        .end((err, res) => {
+          if (err) return done(err);
+          try {
+            assert.ok(Array.isArray(res.body));
+            assert.ok(res.body.every((doc) => '_id' in doc));
+            done();
+          } catch (err) { done(err); }
+        });
     });
 
     it('passes errors to the next middleware', function (done) {
@@ -145,17 +145,17 @@ describe('Router', function () {
         next(new Error('dummy error'));
       });
       const router = createRouter(model('GetError', schema));
-      
+
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(418).end();
       });
 
       request(app)
-      .get('/')
-      .send()
-      .expect(418, done);
+        .get('/')
+        .send()
+        .expect(418, done);
     });
   });
 
@@ -163,21 +163,21 @@ describe('Router', function () {
     it('responds with 404 when no match is found', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
       const id = new ObjectId().toString();
       request(app)
-      .get(`/${id}`)
-      .send()
-      .expect(404, done);
+        .get(`/${id}`)
+        .send()
+        .expect(404, done);
     });
 
     it('responds with the correct document', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
@@ -185,17 +185,17 @@ describe('Router', function () {
         const id = doc._id.toString();
 
         request(app)
-        .get(`/${id}`)
-        .send()
-        .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-          try {
-            assert.equal(res.body._id, id);
-            done();
-          } catch (err) { done(err) }
-        });
-      }).catch(err => done(err));
+          .get(`/${id}`)
+          .send()
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            try {
+              assert.equal(res.body._id, id);
+              done();
+            } catch (err) { done(err); }
+          });
+      }).catch((err) => done(err));
     });
 
     it('passes errors to the next middleware', function (done) {
@@ -207,15 +207,15 @@ describe('Router', function () {
 
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(418).end();
       });
 
       const id = new ObjectId().toString();
       request(app)
-      .get(`/${id}`)
-      .send()
-      .expect(418, done);
+        .get(`/${id}`)
+        .send()
+        .expect(418, done);
     });
   });
 
@@ -223,40 +223,40 @@ describe('Router', function () {
     it('responds with 404 if no match is found', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
       const id = new ObjectId().toString();
       request(app)
-      .patch(`/${id}`)
-      .send({ foo: 'none' })
-      .expect(404, done);
+        .patch(`/${id}`)
+        .send({ foo: 'none' })
+        .expect(404, done);
     });
 
     it('modifies an existing document', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
       new Model().save().then((doc) => {
         const id = doc._id.toString();
-        
+
         request(app)
-        .patch(`/${id}`)
-        .send({ foo: 'baz' })
-        .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-          try {
-            assert.equal(res.body._id, id)
-            assert.equal(res.body.foo, 'baz');
-            done();
-          } catch (err) { done(err) }
-        });
-      }).catch(err => done(err));
+          .patch(`/${id}`)
+          .send({ foo: 'baz' })
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            try {
+              assert.equal(res.body._id, id);
+              assert.equal(res.body.foo, 'baz');
+              done();
+            } catch (err) { done(err); }
+          });
+      }).catch((err) => done(err));
     });
 
     it('passes errors to next middleware', function (done) {
@@ -273,7 +273,7 @@ describe('Router', function () {
 
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(418).end();
       });
 
@@ -281,10 +281,10 @@ describe('Router', function () {
         const id = doc._id.toString();
 
         request(app)
-        .patch(`/${id}`)
-        .send({ foo: 'none' })
-        .expect(418, done);
-      }).catch(err => done(err));
+          .patch(`/${id}`)
+          .send({ foo: 'none' })
+          .expect(418, done);
+      }).catch((err) => done(err));
     });
   });
 
@@ -292,21 +292,21 @@ describe('Router', function () {
     it('responds with 404 if no match is found', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
       const id = new ObjectId().toString();
       request(app)
-      .delete(`/${id}`)
-      .send()
-      .expect(404, done);
+        .delete(`/${id}`)
+        .send()
+        .expect(404, done);
     });
 
     it('deletes the provided document', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
@@ -314,24 +314,24 @@ describe('Router', function () {
         const id = doc._id.toString();
 
         request(app)
-        .delete(`/${id}`)
-        .send()
-        .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
+          .delete(`/${id}`)
+          .send()
+          .expect(200)
+          .end((err, _) => {
+            if (err) return done(err);
 
-          Model.findOne({ id }).exec()
-          .then(doc => assert.equal(doc, null))
-          .then(() => done())
-          .catch(err => done(err));
-        });
-      }).catch(err => done(err));
+            Model.findOne({ id }).exec()
+              .then((doc) => assert.equal(doc, null))
+              .then(() => done())
+              .catch((err) => done(err));
+          });
+      }).catch((err) => done(err));
     });
 
     it('responds with the deleted document', function (done) {
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(400).end();
       });
 
@@ -339,18 +339,18 @@ describe('Router', function () {
         const id = doc._id.toString();
 
         request(app)
-        .delete(`/${id}`)
-        .send()
-        .expect(200)
-        .end((err, res) => {
-          if (err) return done(err);
-          try {
-            assert.equal(res.body._id, id);
-            assert.equal(res.body.foo, 'bar');
-            done();
-          } catch (err) { done(err) }
-        });
-      }).catch(err => done(err));
+          .delete(`/${id}`)
+          .send()
+          .expect(200)
+          .end((err, res) => {
+            if (err) return done(err);
+            try {
+              assert.equal(res.body._id, id);
+              assert.equal(res.body.foo, 'bar');
+              done();
+            } catch (err) { done(err); }
+          });
+      }).catch((err) => done(err));
     });
 
     it('passes errors to next middleware', function (done) {
@@ -363,7 +363,7 @@ describe('Router', function () {
 
       const app = App();
       app.use(router);
-      app.use((err, req, res, next) => {
+      app.use((_, __, res, ___) => {
         res.status(418).end();
       });
 
@@ -372,10 +372,10 @@ describe('Router', function () {
         console.log(id);
 
         request(app)
-        .delete(`/${id}`)
-        .send()
-        .expect(418, done);
-      }).catch(err => done(err));
+          .delete(`/${id}`)
+          .send()
+          .expect(418, done);
+      }).catch((err) => done(err));
     });
   });
 });

@@ -4,7 +4,8 @@
   "description": "Create Express 4 router and middleware from Mongoose 4 model.",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha test"
+    "test": "./node_modules/mocha/bin/mocha test",
+    "lint": "./node_modules/eslint/bin/eslint.js --config ./.eslintrc.js --fix ./"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,9 @@
   },
   "devDependencies": {
     "body-parser": "^1.18.2",
+    "eslint": "^7.1.0",
+    "eslint-plugin-editorconfig": "^2.1.2",
+    "eslint-plugin-mocha": "^7.0.0",
     "istanbul": "^0.3.21",
     "istanbul-coveralls": "^1.0.3",
     "mocha": "^2.3.2",
