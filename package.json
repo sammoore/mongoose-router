@@ -27,7 +27,7 @@
     "mongoose-controller": "./vendor/mongoose-controller"
   },
   "peerDependencies": {
-    "mongoose": "^4.7.0"
+    "mongoose": "4.13.20"
   },
   "devDependencies": {
     "body-parser": "^1.18.2",
@@ -35,7 +35,7 @@
     "eslint-plugin-editorconfig": "^2.1.2",
     "eslint-plugin-mocha": "^7.0.0",
     "mocha": "^2.3.2",
-    "mongoose": "~4.7",
+    "mongoose": "4.13.20",
     "supertest": "^1.1.0"
   },
   "engines": {
