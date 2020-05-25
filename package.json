@@ -4,6 +4,7 @@
   "description": "Create Express 4 router and middleware from Mongoose 4 model.",
   "main": "index.js",
   "scripts": {
+    "check": "npm run lint && npm run test",
     "test": "./node_modules/mocha/bin/mocha test",
     "lint": "./node_modules/eslint/bin/eslint.js --config ./.eslintrc.js --fix ./"
   },
@@ -34,6 +35,7 @@
     "eslint": "~7.1",
     "eslint-plugin-editorconfig": "~2.1",
     "eslint-plugin-mocha": "~7.0",
+    "husky": "^4.2.5",
     "mocha": "~7.2",
     "mongoose": "4.13.20",
     "supertest": "~4.0"
@@ -41,5 +43,11 @@
   "engines": {
     "node": ">=8.0.0",
     "npm": ">=6.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run check",
+      "pre-push": "npm run check"
+    }
   }
 }
