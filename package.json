@@ -23,20 +23,20 @@
   },
   "homepage": "https://github.com/alexmingoia/mongoose-express-router#readme",
   "dependencies": {
-    "express": "^4.13.3",
+    "express": "~4.13",
     "mongoose-controller": "./vendor/mongoose-controller"
   },
   "peerDependencies": {
     "mongoose": "4.13.20"
   },
   "devDependencies": {
-    "body-parser": "^1.18.2",
-    "eslint": "^7.1.0",
-    "eslint-plugin-editorconfig": "^2.1.2",
-    "eslint-plugin-mocha": "^7.0.0",
+    "body-parser": "~1.18",
+    "eslint": "~7.1",
+    "eslint-plugin-editorconfig": "~2.1",
+    "eslint-plugin-mocha": "~7.0",
     "mocha": "~7.2",
     "mongoose": "4.13.20",
-    "supertest": "^1.1.0"
+    "supertest": "~1.2"
   },
   "engines": {
     "node": ">=8.0.0",
